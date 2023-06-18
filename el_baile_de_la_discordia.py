@@ -3,7 +3,7 @@ from pyomo.environ import*
 import time
 
 # Lectura de datos
-file_path = "data/gc_4_1"
+file_path = "data/gc_250_9"
 data = pd.read_csv(file_path, header=None, delimiter=' ')
 print(data)
 pNo_Alumnos = data[0][0]
@@ -70,8 +70,10 @@ execution_time = end_time - start_time
 
 print("Estado de la solución:", results.solver.termination_condition)
 
-
+color_max = 0
 for i in instance.sAlumnos:
+    if value(instance.vColor[i]) > color_max:
+        color_max = value(instance.vColor[i])
     print("Alumno {}: Color {}".format(i, value(instance.vColor[i])))
-
+print("Color max", color_max)
 print("Tiempo de ejecución:", execution_time, "segundos")
