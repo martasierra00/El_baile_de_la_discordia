@@ -20,6 +20,7 @@ input_data = {None: {
 }}
 # Creación del modelo
 model = AbstractModel()
+
 # Defino los sets
 model.sAlumnos = Set()
 model.sRivalidad = Set()
@@ -30,12 +31,12 @@ model.pNo_Alumnos = Param()
 model.pNo_Rivalidad = Param()
 
 # Defino las variables
-model.vAlumnos = Var(model.sAlumnos, within=NonNegativeReals)
-model.vAlpha = Var(model.sRivalidad, within=Binary)
+model.vColor = Var(model.sAlumnos, within=NonNegativeReals)
+# model.vAlpha = Var(model.sRivalidad, within=Binary)
 
 # Defino la función objetivo
 def obj(model):
-    return sum(model.vAlumnos[i] for i in model.sAlumnos)
+    return sum(model.vColor[i] for i in model.sAlumnos)
 
 
 model.obj = Objective(rule=obj, sense=pyomo.core.minimize)
@@ -43,7 +44,7 @@ model.obj = Objective(rule=obj, sense=pyomo.core.minimize)
 
 # Defino las restricciones
 def c1(model, sRivalidad):
-    return model.vAlumnos[pRivalidad[1, sRivalidad]] - model.vAlumnos[pRivalidad[0, sRivalidad]] >= 1
+    return model.vColor[pRivalidad[1, sRivalidad]] - model.vColor[pRivalidad[0, sRivalidad]] >= 1
            # + \
            # (1 - model.vAlpha[sRivalidad]) * model.pNo_Alumnos
 
@@ -71,6 +72,6 @@ print("Estado de la solución:", results.solver.termination_condition)
 
 
 for i in instance.sAlumnos:
-    print("Alumno {}: Color {}".format(i, value(instance.vAlumnos[i])))
+    print("Alumno {}: Color {}".format(i, value(instance.vColor[i])))
 
 print("Tiempo de ejecución:", execution_time, "segundos")
